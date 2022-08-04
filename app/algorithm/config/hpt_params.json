@@ -1,0 +1,41 @@
+[
+  {
+    "name": "rnn_unit",
+    "short_desc": "One of two types: [ 'lstm', 'gru' ]",
+    "default": "gru",
+    "type": "categorical",
+    "categorical_vals": ["lstm", "gru"],
+    "run_HPO": true
+  },
+  {
+    "name": "embedding_size",
+    "short_desc": "Word embedding size",
+    "default": 50,
+    "type": "int",
+    "search_type": "uniform",
+    "range_low": 20,
+    "range_high": 70,
+    "run_HPO": true
+  },
+  {
+    "name": "latent_dim",
+    "short_desc": "Latent dim size in RNN unit",
+    "default": 20,
+    "type": "int",
+    "search_type": "uniform",
+    "range_low": 10,
+    "range_high": 50,
+    "run_HPO": true
+  },
+
+  {
+    "name": "batch_size",
+    "short_desc": "Batch size",
+    "default": 32,
+    "type": "int",
+    "range_low": 16,
+    "range_high": 128,
+    "search_type": "uniform",
+    "run_HPO": true
+  }
+]
