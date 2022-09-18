@@ -13,35 +13,17 @@ import algorithm.preprocessing.preprocessors as preprocessors
 PREPROCESSOR_FNAME = "preprocessor.save"
 
 
-
-'''
-
-PRE-POCESSING STEPS =====>
-
-
-=========== for text (document column) ========
-- 
-
-=========== for target variable ========
-- 
-===============================================
-'''
-
-
-
-
-
-def get_preprocess_pipeline(model_cfg):  
+def get_preprocess_pipeline(pp_params, model_cfg):  
     pp_step_names = model_cfg["pp_params"]["pp_step_names"]        
-    text_pipeline = get_text_pipeline(model_cfg=model_cfg)
-    target_pipeline = get_target_pipeline(model_cfg=model_cfg)
+    text_pipeline = get_text_pipeline(pp_params=pp_params, model_cfg=model_cfg)
+    target_pipeline = get_target_pipeline(pp_params=pp_params, model_cfg=model_cfg)
     
     main_pipeline = Pipeline(
         [
             (
                 pp_step_names["TARGET_FEATURE_ADDER"],
                 preprocessors.TargetFeatureAdder(
-                    target_col='class',
+                    target_col=pp_params["target_field"],
                     fill_value = model_cfg['target_dummy_val']
                     ),
             ),
@@ -53,7 +35,7 @@ def get_preprocess_pipeline(model_cfg):
                         (
                             pp_step_names["ID_SELECTOR"], 
                             preprocessors.ColumnsSelector(
-                                columns=['id'],
+                                columns=[pp_params["id_field"]],
                                 selector_type='keep'
                             ) 
                         )
@@ -63,9 +45,9 @@ def get_preprocess_pipeline(model_cfg):
             (
                 pp_step_names["XYSPLITTER"], 
                 preprocessors.XYSplitter(
-                    text_col="text",
-                    target_col="class",
-                    id_col="id",
+                    text_col=pp_params["document_field"],
+                    target_col=pp_params["target_field"],
+                    id_col=pp_params["id_field"],
                     ),
             )
         ]
@@ -75,7 +57,7 @@ def get_preprocess_pipeline(model_cfg):
     
 
 
-def get_text_pipeline(model_cfg):     
+def get_text_pipeline(pp_params, model_cfg):     
     pp_step_names = model_cfg["pp_params"]["pp_step_names"]    
     pipe_steps = []     
     
@@ -84,7 +66,7 @@ def get_text_pipeline(model_cfg):
         (
             pp_step_names["CUSTOM_TOKENIZER"], 
             preprocessors.CustomTokenizerWithLimitedVocab(
-                text_col = 'text',
+                text_col = pp_params["document_field"],
                 vocab_size = 5000,
                 keep_words=[],         
             )
@@ -96,7 +78,7 @@ def get_text_pipeline(model_cfg):
         (
             pp_step_names["PADDER_TRUNCATOR"], 
             preprocessors.PadderTruncator(
-                text_col = 'text',
+                text_col = pp_params["document_field"],
                 max_len = model_cfg["MAX_TEXT_LEN"],
             )
         )
@@ -106,14 +88,14 @@ def get_text_pipeline(model_cfg):
     pipe_steps.append(
         (
             pp_step_names["TEXT_SELECTOR"], 
-            preprocessors.ColumnSelector('text')
+            preprocessors.ColumnSelector(pp_params["document_field"])
         )
     )    
     text_pipeline = Pipeline( pipe_steps )    
     return text_pipeline
 
 
-def get_target_pipeline(model_cfg):     
+def get_target_pipeline(pp_params, model_cfg):     
     pp_step_names = model_cfg["pp_params"]["pp_step_names"]    
     pipe_steps = []       
     # select the text column
@@ -121,7 +103,7 @@ def get_target_pipeline(model_cfg):
         (
             pp_step_names["TARGET_SELECTOR"], 
             preprocessors.ColumnsSelector(
-                columns=['class'],
+                columns=pp_params["target_field"],
                 selector_type='keep'
                 )
         )
@@ -131,7 +113,7 @@ def get_target_pipeline(model_cfg):
         (
             pp_step_names["LABEL_ENCODER"],
             preprocessors.CustomLabelEncoder( 
-                target_col='class',
+                target_col=pp_params["target_field"],
                 dummy_label=model_cfg['target_dummy_val'],
                 ),
         )

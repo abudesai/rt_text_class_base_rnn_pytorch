@@ -10,7 +10,7 @@
   {
     "name": "embedding_size",
     "short_desc": "Word embedding size",
-    "default": 50,
+    "default": 30,
     "type": "int",
     "search_type": "uniform",
     "range_low": 20,
@@ -20,11 +20,11 @@
   {
     "name": "latent_dim",
     "short_desc": "Latent dim size in RNN unit",
-    "default": 20,
+    "default": 32,
     "type": "int",
     "search_type": "uniform",
-    "range_low": 10,
-    "range_high": 50,
+    "range_low": 16,
+    "range_high": 64,
     "run_HPO": true
   },
 

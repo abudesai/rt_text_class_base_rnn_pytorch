@@ -105,28 +105,22 @@ def tune_hyperparameters(data, data_schema, num_trials, hyper_param_path, hpt_re
     hpt_space = get_hpt_space(hpt_specs)  
     default_hps = get_default_hps(hpt_specs)  
     
+    # set random seeds
+    utils.set_seeds()   
+    # perform train/valid split on the training data 
+    train_data, valid_data = train_test_split(data, test_size=model_cfg['valid_split'])   
+    train_X, train_y, valid_X, valid_y , preprocessor  = model_trainer.preprocess_data(train_data, valid_data, data_schema)   
+    # train_X, valid_X = train_X.astype(np.float),  valid_X.astype(np.float)
     
+    # balance the targetclasses  
+    train_X, train_y = model_trainer.get_resampled_data(train_X, train_y)
+    valid_X, valid_y = model_trainer.get_resampled_data(valid_X, valid_y)             
     
     # Scikit-optimize objective function
     @use_named_args(hpt_space)
     def objective(**hyperparameters):  
-                        
-        # set random seeds
-        utils.set_seeds()
         
-        # balance the target classes  
-        balanced_data = utils.get_resampled_data(data = data, 
-                            max_resample = model_cfg["max_resample_of_minority_classes"])
-        
-        # perform train/valid split 
-        train_data, valid_data = train_test_split(balanced_data, test_size=model_cfg['valid_split'])
-        # print(train_data.shape, valid_data.shape) #; sys.exit()    
-
-        # preprocess data
-        print("Pre-processing data...")
-        train_X, train_y, valid_X, valid_y , _ = model_trainer.preprocess_data(train_data, valid_data)              
-        # print("train/valid data shape: ", train_X.shape, train_y.shape, valid_X.shape, valid_y.shape)
-        
+        print(hyperparameters)
         
         """Build a model from this hyper parameter permutation and evaluate its performance"""
         # train model

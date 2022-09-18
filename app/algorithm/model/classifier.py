@@ -2,7 +2,7 @@
 import numpy as np, pandas as pd
 import joblib
 import json
-import sys
+import sys 
 import os, warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 warnings.filterwarnings('ignore') 
@@ -11,11 +11,11 @@ warnings.filterwarnings('ignore')
 import torch
 import torch.optim as optim
 from torch.nn import GRU, LSTM, ReLU, Linear, Embedding, Module, CrossEntropyLoss
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader 
 
 
 
-MODEL_NAME = "text_class_RNN_pytorch"
+MODEL_NAME = "text_class_base_rnn_pytorch"
 
 model_params_fname = "model_params.save"
 model_wts_fname = "model_wts.save"
@@ -49,6 +49,8 @@ class CustomDataset(Dataset):
     def __len__(self):
         return len(self.x)
     
+
+
 
 class Net(Module):
     def __init__(self, rnn_unit, V, T, K, D, M):
@@ -98,8 +100,8 @@ class Net(Module):
 
 class Classifier(): 
     
-    def __init__(self, rnn_unit, vocab_size, max_seq_len, num_target_classes, 
-                 embedding_size, latent_dim, batch_size):
+    def __init__(self, vocab_size, max_seq_len, num_target_classes, 
+                 rnn_unit="gru", embedding_size=30, latent_dim=32, batch_size=32, **kwargs):
         '''
         rnn_unit: one of 'gru' or 'lstm'. Casing doesnt matter.
         V: vocabulary size
@@ -230,9 +232,9 @@ class Classifier():
 
 
     @classmethod
-    def load(cls, model_path): 
+    def load(ml, model_path): 
         model_params = joblib.load(os.path.join(model_path, model_params_fname))
-        classifier = cls(**model_params)
+        classifier = ml(**model_params)
         classifier.net.load_state_dict(torch.load( os.path.join(model_path, model_wts_fname)))        
         return classifier
     
