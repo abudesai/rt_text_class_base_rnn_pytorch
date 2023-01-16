@@ -183,13 +183,8 @@ def get_class_names(pipeline, model_cfg):
     
 
 def save_preprocessor(preprocess_pipe, file_path):
-    file_path_and_name = os.path.join(file_path, PREPROCESSOR_FNAME)
-    try: 
-        joblib.dump(preprocess_pipe, file_path_and_name)   
-    except: 
-        raise Exception(f'''
-            Error saving the preprocessor. 
-            Does the file path exist {file_path}?''')  
+    file_path_and_name = os.path.join(file_path, PREPROCESSOR_FNAME)    
+    joblib.dump(preprocess_pipe, file_path_and_name)   
     return    
     
 
@@ -199,12 +194,7 @@ def load_preprocessor(file_path):
         raise Exception(f'''Error: No trained preprocessor found. 
         Expected to find model files in path: {file_path_and_name}''')
         
-    try: 
-        preprocess_pipe = joblib.load(file_path_and_name)     
-    except: 
-        raise Exception(f'''
-            Error loading the preprocessor. 
-            Do you have the right trained preprocessor at {file_path_and_name}?''')
+    preprocess_pipe = joblib.load(file_path_and_name)     
     
     return preprocess_pipe 
     

@@ -226,8 +226,9 @@ class XYSplitter(BaseEstimator, TransformerMixin):
         else: 
             y = None
         
+        
         X = np.array(data[self.text_col].values.tolist())        
-        return { 'X': X, 'y': y  }
+        return { 'X': X, 'y': y, 'ids':  data[self.id_col].values }
     
         
     

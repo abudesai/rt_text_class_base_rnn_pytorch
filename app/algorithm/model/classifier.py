@@ -230,7 +230,7 @@ class Classifier:
                     )
         return losses
 
-    def predict(self, X):
+    def predict_proba(self, X):
         X = torch.LongTensor(X).to(device)
         preds = torch.softmax(self.net(X), dim=-1).detach().cpu().numpy()
         return preds

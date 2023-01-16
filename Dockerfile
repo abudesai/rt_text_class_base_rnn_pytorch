@@ -29,3 +29,9 @@ RUN chmod +x train &&\
     chmod +x predict &&\
     chmod +x tune &&\
     chmod +x serve 
+
+RUN chown -R 1000:1000 /opt/app/  && \
+    chown -R 1000:1000 /var/log/nginx/  && \
+    chown -R 1000:1000 /var/lib/nginx/
+
+USER 1000

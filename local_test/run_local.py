@@ -97,9 +97,6 @@ def copy_example_files(dataset_name):
     shutil.copyfile(f"{local_datapath}/{dataset_name}/{dataset_name}_train.csv", os.path.join(train_data_path, f"{dataset_name}_train.csv"))    
     # test data     
     shutil.copyfile(f"{local_datapath}/{dataset_name}/{dataset_name}_test.csv", os.path.join(test_data_path, f"{dataset_name}_test.csv"))    
-    # hyperparameters
-    shutil.copyfile("./examples/hyperparameters.json", os.path.join(hyper_param_path, "hyperparameters.json"))
-
 
 
 def run_HPT(num_hpt_trials): 
@@ -264,7 +261,7 @@ if __name__ == "__main__":
     
     datasets = ["clickbait", "drug_reviews", "ecommerce_categories", "fake_job_postings", "hate_speech", 
                 "movie_reviews", "musical_instruments", "newsgroups", "spam_text", "tweet_emotions"]
-    # datasets = ["ecommerce_categories"]
+    datasets = ["spam_text"]
     
     for run_hpt in run_hpt_list:
         all_results = []
